@@ -7,6 +7,13 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
+
+<!--firebase scripts-->
+<script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-analytics.js"></script>
+
 <!-- Favicons
     ================================================== -->
 <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
@@ -24,6 +31,7 @@
 <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,600,700" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Rochester" rel="stylesheet">
+
 
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -45,7 +53,7 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><a href="#about">about</a></li>
+        <li><a href="index.html">Home</a></li>
         <li><a href="profile.html">Profile</a></li>
         <li><a href="recipes.html">Browse recipes</a></li>
         <li><a href="Search.html">Search recipes</a></li>
@@ -55,6 +63,64 @@
     <!-- /.navbar-collapse --> 
   </div>
 </nav>
+<!-- Header -->
+<header id="header">
+    <div class="intro">
+      <div class="overlay">
+        <div class="container">
+          <div class="row">
+            <div class="intro-text">
+              <h1>Welcome!</h1>
+              <p>Welcome to the recipe project.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+<table id="userInfo" style="width: 50%;">
+    <tr>
+        <th>Name</th>
+        <th>E-mail</th>
+        <th>Allergies</th>
+        <th>Dietary restrictions</th> 
+
+
+    </tr>
+    <tr>
+        <td id="Uname"></td>
+        <td id="Uemail"></td>
+        <td id="Uall"></td>
+        <td id="Ures"></td> 
+        
+
+    </tr>
+    
+</table>
+<!--firebase config-->
+<script src="config.js"></script> 
+
+   <!--To get user info-->
+   <script>
+    firebase.auth().onAuthStateChanged(firebaseUser => {
+        if (firebaseUser) {
+            //document.getElementById("emailDisplay").innerHTML = firebaseUser.email;
+            // Get reference for user from database
+            let ref = firebase.database().ref('/users/' + firebaseUser.uid);
+            // Get user object
+            ref.on('value', function(userSnapshot) {
+                let user = userSnapshot.val();
+                document.getElementById("Uname").innerHTML = user.name;
+                document.getElementById("Uemail").innerHTML = user.email;
+                document.getElementById("Uall").innerHTML = user.allergy;
+                document.getElementById("Ures").innerHTML = user.restriction;	
+            })
+        } 
+    });
+    </script>
+
+
 
 
 
@@ -78,5 +144,7 @@
 <script type="text/javascript" src="js/jqBootstrapValidation.js"></script> 
 <script type="text/javascript" src="js/contact_me.js"></script> 
 <script type="text/javascript" src="js/main.js"></script>
+
+
 </body>
 </html>
