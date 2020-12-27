@@ -1,3 +1,7 @@
+<?php
+  include_once 'dbConnect.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,9 +57,9 @@
       <ul class="nav navbar-nav">
         <li><a href="#about">About</a></li>
         <li><a href="profile.html">Profile</a></li>
-
+        <li><a href="recipes.html">Browse recipes</a></li>
         <li><div class="search-container">
-          <form action= "searchResults.html">
+          <form action="/action_page.php">
             <input type="text" placeholder="Search recipes.." name="search">
             <button type="submit"><i class="fa fa-search"></i></button>
           </form>
@@ -152,7 +156,7 @@
 <script type="text/javascript" src="js/bootstrap.js"></script> 
 <script type="text/javascript" src="js/SmoothScroll.js"></script> 
 <script type="text/javascript" src="js/jqBootstrapValidation.js"></script> 
-
+<script type="text/javascript" src="js/contact_me.js"></script> 
 <script type="text/javascript" src="js/main.js"></script>
 </body>
 </html>

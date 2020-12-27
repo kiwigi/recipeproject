@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Welcome</title>
+<title>User profile</title>
 <meta name="description" content="">
 <meta name="author" content="">
 
@@ -55,8 +55,14 @@
       <ul class="nav navbar-nav">
         <li><a href="index.html">Home</a></li>
         <li><a href="profile.html">Profile</a></li>
-        <li><a href="recipes.html">Browse recipes</a></li>
-        <li><a href="Search.html">Search recipes</a></li>
+        
+        <li><div class="search-container">
+          <form action="searchResults.html">
+            <input id= "seachInput" type="text" placeholder="Search recipes.." name="search">
+            <button type="submit"><i class="fa fa-search"></i></button>
+          </form>
+        </div>
+        </li>
 
       </ul>
     </div>
@@ -70,8 +76,8 @@
         <div class="container">
           <div class="row">
             <div class="intro-text">
-              <h1>Welcome!</h1>
-              <p>Welcome to the recipe project.</p>
+              <h1>Profile</h1>
+              <p>All about you!</p>
             </div>
           </div>
         </div>
@@ -79,30 +85,85 @@
     </div>
   </header>
 
-<table id="userInfo" style="width: 50%;">
+
+ <style> 
+ table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    padding-bottom: 5%;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+  .center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 5%;
+}
+.btnn {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 10%;
+  
+}
+.pic {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 5%;
+  width: 15%;
+}
+  </style>
+  <div id= "info" class = "center">
+  
+  <img src="img/defaultpic.png" class="pic">
+
+  <table id="userInfo" >
     <tr>
         <th>Name</th>
         <th>E-mail</th>
-        <th>Allergies</th>
-        <th>Dietary restrictions</th> 
+        <th>Banned ingredients: </th>
+
 
 
     </tr>
     <tr>
         <td id="Uname"></td>
         <td id="Uemail"></td>
-        <td id="Uall"></td>
-        <td id="Ures"></td> 
-        
+        <td id="Uban"></td>
 
     </tr>
-    
+ 
+
 </table>
+<button id="cInfo" class="btnn">Add banned ingredients</button>
+
+<form style= "visibility: hidden;" id = "cform">
+	<p>Ingredient name: </p><input type="text" id="bIngredient" />
+	
+</form>
+
+
+
+<button style= "visibility: hidden;"  id="addbtn" class="btnn">Submit changes</button>
+
+</div>
 <!--firebase config-->
 <script src="config.js"></script> 
 
    <!--To get user info-->
    <script>
+    
     firebase.auth().onAuthStateChanged(firebaseUser => {
         if (firebaseUser) {
             //document.getElementById("emailDisplay").innerHTML = firebaseUser.email;
@@ -113,14 +174,89 @@
                 let user = userSnapshot.val();
                 document.getElementById("Uname").innerHTML = user.name;
                 document.getElementById("Uemail").innerHTML = user.email;
-                document.getElementById("Uall").innerHTML = user.allergy;
-                document.getElementById("Ures").innerHTML = user.restriction;	
+                
+                firebase.database().ref('/users/' + firebaseUser.uid+ '/bannedIngredients').once('value', function(snapshot) {
+                snapshot.forEach(function(childSnapshot)
+                {
+                let childKey = childSnapshot.key;
+                console.log(childKey)
+                let childData = childSnapshot.val();
+                console.log(childData)
+
+                //document.getElementById("Uban").innerHTML = childData['ingredient'];
+                var htm = '';
+                
+                htm += '<td>' +childData['ingredient']+ '</td>';
+                $('#Uban').append(htm);
+
+        })
+      })
+                
+                
+                console.log(user.bannedIngredients.value)
+                //var ing = JSON.parse(JSON.parse(user.bannedIngredients));
+                
+                //document.getElementById("Uban").innerHTML = ing.ingredient;
+
+            
+
             })
         } 
-    });
-    </script>
+   });
+</script>
+<script>
+
+document.getElementById("cInfo").addEventListener("click", showTxtBox)
+
+function showTxtBox(){
+          
+  document.getElementById("cform").style.visibility = "visible";
+  document.getElementById("addbtn").style.visibility = "visible";
+
+}
+
+  const submitBtn = document.getElementById('addbtn');
+  submitBtn.addEventListener('click', e => {
+    addIngredient();
+  })
 
 
+function addIngredient(){
+
+       
+ 
+	firebase.auth().onAuthStateChanged(firebaseUser => {
+	if (firebaseUser) {
+    
+    
+    
+    
+    let ref = firebase.database().ref('/users/' + firebaseUser.uid);
+		// Get user object
+    
+  
+                
+	  var aRef = ref.child("bannedIngredients");		
+    //ref.on('value', function(studentSnapshot) {
+		//	let person = studentSnapshot.val();
+
+
+
+	var datRef = aRef.push();
+	datRef.set({
+		ingredient : document.getElementById("bIngredient").value
+  
+  });
+}
+}) 
+}
+
+
+
+
+
+
+</script>
 
 
 
@@ -142,7 +278,7 @@
 <script type="text/javascript" src="js/bootstrap.js"></script> 
 <script type="text/javascript" src="js/SmoothScroll.js"></script> 
 <script type="text/javascript" src="js/jqBootstrapValidation.js"></script> 
-<script type="text/javascript" src="js/contact_me.js"></script> 
+ 
 <script type="text/javascript" src="js/main.js"></script>
 
 
